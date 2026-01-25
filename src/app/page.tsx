@@ -1,73 +1,63 @@
-// src/app/dashboard/page.tsx
 import { Separator } from "@/components/ui/separator";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { SessionsTable } from "@/components/dashboard/SessionsTable";
 import { PackageExpiries } from "@/components/dashboard/PackageExpires";
-import { stats, sessions, packageExpiries } from "@/data/mockData"; // ← fixed path
+import { stats, sessions, packageExpiries } from "@/data/mockData";
 
 export default function DashboardPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Responsive container with padding */}
-      <div className="mx-auto max-w-screen-2xl px-4 py-6 sm:px-6 md:px-8 lg:px-10 xl:px-12">
-        <div className="space-y-8 md:space-y-10 lg:space-y-12">
-          {/* Header section */}
-          <header className="space-y-3 text-center sm:text-left">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-              VahanEX - Driving Institute Management System
-            </h1>
-            <h2 className="text-xl font-medium text-muted-foreground md:text-2xl">
-              Dashboard
-            </h2>
-            <p className="text-base md:text-lg text-muted-foreground">
-              Welcome back! Here's what's happening today.
-            </p>
-          </header>
-
-          <Separator className="my-6 md:my-8" />
-
-          {/* Statistics Cards */}
-          <section aria-labelledby="stats-heading">
-            <h3 id="stats-heading" className="sr-only">
-              Key Statistics
-            </h3>
-            {stats.length > 0 ? (
-              <div className="grid gap-4 xs:grid-cols-2 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-                {stats.map((stat, index) => (
-                  <StatsCard key={index} stat={stat} />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-12 text-muted-foreground text-lg">
-                No statistics available at the moment
-              </div>
-            )}
-          </section>
-
-          {/* Two-column content: Sessions + Package Expiries */}
-          <section className="grid gap-6 lg:gap-8 lg:grid-cols-2 xl:gap-10">
-            {/* Today's Driving Sessions */}
-            <div className="space-y-4">
-              <h3 className="text-xl md:text-2xl font-semibold text-foreground">
-                Today's Driving Sessions
-              </h3>
-              <div className="rounded-xl border bg-card shadow-sm">
-                <SessionsTable sessions={sessions} />
-              </div>
-            </div>
-
-            {/* Package Expiries */}
-            <div className="space-y-4">
-              <h3 className="text-xl md:text-2xl font-semibold text-foreground">
-                Package Expiries
-              </h3>
-              <div className="rounded-xl border bg-card shadow-sm">
-                <PackageExpiries items={packageExpiries} />
-              </div>
-            </div>
-          </section>
-        </div>
+    <div className="space-y-4 md:space-y-6">
+      {/* Header */}
+      <div className="space-y-1">
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+          Dashboard
+        </h1>
+        <p className="text-sm md:text-base text-muted-foreground">
+          Welcome back! Here's what's happening today.
+        </p>
       </div>
+
+      {/* Stats Cards – 2 rows, 3 columns with more space between */}
+      <section aria-labelledby="stats-title" className="space-y-3">
+        <h2 id="stats-title" className="sr-only">
+          Key Statistics
+        </h2>
+
+        {stats.length > 0 ? (
+          <div className="grid gap-4 sm:gap-5 md:gap-6 grid-cols-1 sm:grid-cols-3 md:grid-cols-3">
+            {stats.map((stat, index) => (
+              <StatsCard key={index} stat={stat} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8 text-muted-foreground text-sm md:text-base font-medium">
+            No statistics available at the moment
+          </div>
+        )}
+      </section>
+
+      {/* Two-column content on lg+, single on smaller screens */}
+      <section className="grid gap-4 md:gap-6 lg:grid-cols-2">
+        {/* Today's Driving Sessions */}
+        <div className="space-y-3">
+          <h3 className="text-lg md:text-xl font-semibold text-foreground">
+            Today's Driving Sessions
+          </h3>
+          <div className="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+            <SessionsTable sessions={sessions} />
+          </div>
+        </div>
+
+        {/* Package Expiries */}
+        <div className="space-y-3">
+          <h3 className="text-lg md:text-xl font-semibold text-foreground">
+            Package Expiries
+          </h3>
+          <div className="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+            <PackageExpiries items={packageExpiries} />
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
