@@ -38,7 +38,7 @@ export default function Sidebar({ onClose, isMobile = false }: SidebarProps) {
     <aside
       className={cn(
         "bg-white dark:bg-gray-900 shadow-xl",
-        "flex flex-col h-full w-full"
+        "flex flex-col h-full w-full",
       )}
     >
       {/* Header with logo */}
@@ -76,7 +76,7 @@ export default function Sidebar({ onClose, isMobile = false }: SidebarProps) {
                     "flex items-center gap-3 px-4 py-3 rounded-lg transition-all whitespace-nowrap",
                     isActive
                       ? "bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-md"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800",
                   )}
                 >
                   <Icon className="text-xl w-6 h-6 flex-shrink-0" />
@@ -137,8 +137,8 @@ export default function Sidebar({ onClose, isMobile = false }: SidebarProps) {
 //                 <span className="sr-only">Toggle menu</span>
 //               </Button>
 //             </SheetTrigger>
-//             <SheetContent 
-//               side="left" 
+//             <SheetContent
+//               side="left"
 //               className="w-64 sm:w-72 p-0 border-none"
 //               onInteractOutside={() => setOpen(false)}
 //             >
@@ -147,8 +147,8 @@ export default function Sidebar({ onClose, isMobile = false }: SidebarProps) {
 //           </Sheet>
 
 //           {/* Logo/Brand - visible on mobile */}
-//           <Link 
-//             href="/dashboard" 
+//           <Link
+//             href="/dashboard"
 //             className="text-lg sm:text-xl font-bold tracking-tight text-primary hover:text-primary/80 transition-colors lg:hidden"
 //           >
 //             VahanEX
