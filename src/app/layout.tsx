@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Navbar } from "@/components/layout/Navbar";
+import Header from "@/components/layout/Header";
 import Sidebar from "@/components/layout/Sidebar";
 
 const inter = Inter({
