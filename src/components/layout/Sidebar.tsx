@@ -37,33 +37,34 @@ export default function Sidebar({ onClose, isMobile = false }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "bg-white dark:bg-gray-900 shadow-xl",
         "flex flex-col h-full w-full",
+        "bg-card border-r border-border shadow-sm",
       )}
     >
-      {/* Header with logo */}
-      <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex-shrink-0">
-        <div className="flex items-center justify-between">
+      {/* Header with logo and single close button (mobile only) */}
+      <div className="p-4 sm:p-6 border-b border-border shrink-0">
+        <div className="flex items-center justify-between gap-2">
           <img
             src="https://public.readdy.ai/ai/img_res/5d95f71b-3628-469e-9603-6f2b7c9d4d63.png"
             alt="VahanEX Logo"
-            className="h-10 w-auto object-contain"
+            className="h-9 w-auto object-contain sm:h-10"
           />
           {isMobile && onClose && (
             <button
+              type="button"
               onClick={onClose}
-              className="lg:hidden w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
-              aria-label="Close sidebar"
+              className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors touch-manipulation"
+              aria-label="Close menu"
             >
-              <X className="h-6 w-6" />
+              <X className="h-5 w-5 sm:h-6 sm:w-6" />
             </button>
           )}
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-6 px-4">
-        <ul className="space-y-2">
+      <nav className="flex-1 overflow-y-auto py-4 sm:py-6 px-3 sm:px-4">
+        <ul className="space-y-1 sm:space-y-2">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
@@ -73,13 +74,13 @@ export default function Sidebar({ onClose, isMobile = false }: SidebarProps) {
                   href={item.href}
                   onClick={onClose}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-lg transition-all whitespace-nowrap",
+                    "flex items-center gap-3 px-3 py-2.5 sm:px-4 sm:py-3 rounded-lg transition-all whitespace-nowrap text-sm sm:text-base",
                     isActive
                       ? "bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-md"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800",
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground",
                   )}
                 >
-                  <Icon className="text-xl w-6 h-6 flex-shrink-0" />
+                  <Icon className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" />
                   <span className="font-medium">{item.name}</span>
                 </Link>
               </li>
@@ -89,16 +90,16 @@ export default function Sidebar({ onClose, isMobile = false }: SidebarProps) {
       </nav>
 
       {/* User Profile */}
-      <div className="p-4 border-t border-gray-200 dark:border-gray-800 flex-shrink-0">
-        <div className="flex items-center gap-3 px-4 py-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white font-semibold flex-shrink-0">
+      <div className="p-3 sm:p-4 border-t border-border shrink-0">
+        <div className="flex items-center gap-3 px-3 py-2.5 sm:px-4 sm:py-3">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white font-semibold shrink-0 text-sm">
             A
           </div>
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+            <p className="text-sm font-semibold text-foreground truncate">
               Admin User
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+            <p className="text-xs text-muted-foreground truncate">
               Administrator
             </p>
           </div>

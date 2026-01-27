@@ -44,8 +44,8 @@ export default function RootLayout({
 
             {/* Main content column */}
             <div className="flex flex-col flex-1 w-full lg:ml-64 overflow-hidden">
-              {/* Navbar */}
-              <Navbar />
+              {/* Header (mobile menu + theme; desktop shows Header only, sidebar is fixed left) */}
+              <Header />
 
               {/* Scrollable main content */}
               <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-950">
