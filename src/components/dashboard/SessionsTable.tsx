@@ -18,7 +18,7 @@ interface SessionsTableProps {
 
 export function SessionsTable({ sessions }: SessionsTableProps) {
   return (
-  <Card className="shadow-sm">
+    <Card className="shadow-sm">
       <CardHeader>
         <CardTitle>Today's Driving Sessions</CardTitle>
       </CardHeader>
