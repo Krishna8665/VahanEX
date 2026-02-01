@@ -3,7 +3,14 @@
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, Menu } from "lucide-react";
 import { useTheme } from "next-themes";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+
 import Sidebar from "./Sidebar";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
@@ -18,7 +25,7 @@ export function Navbar() {
   useEffect(() => {
     // Get the main scroll container
     const mainElement = document.querySelector("main");
-    
+
     const handleScroll = () => {
       if (mainElement) {
         setIsScrolled(mainElement.scrollTop > 10);
@@ -60,7 +67,11 @@ export function Navbar() {
               className="w-64 sm:w-72 p-0 border-none"
               onInteractOutside={() => setOpen(false)}
             >
-              <Sidebar onClose={() => setOpen(false)} isMobile={true} />
+              <SheetHeader className="sr-only">
+                <SheetTitle>Navigation Menu</SheetTitle>
+              </SheetHeader>
+
+              <Sidebar onClose={() => setOpen(false)} isMobile />
             </SheetContent>
           </Sheet>
 

@@ -3,7 +3,14 @@
 import { Button } from "@/components/ui/button";
 import { Menu, Sun, Moon } from "lucide-react";
 import { useState } from "react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+
 import Link from "next/link";
 import Sidebar from "./Sidebar";
 import { useTheme } from "next-themes";
@@ -35,6 +42,10 @@ export default function Header() {
               onInteractOutside={() => setOpen(false)}
               hideCloseButton
             >
+              <SheetHeader className="sr-only">
+                <SheetTitle>Navigation Menu</SheetTitle>
+              </SheetHeader>
+
               <Sidebar onClose={() => setOpen(false)} isMobile />
             </SheetContent>
           </Sheet>
@@ -64,10 +75,23 @@ export default function Header() {
             <Sun className="h-4 w-4 sm:h-5 sm:w-5 absolute transition-all rotate-0 scale-100 dark:scale-0 dark:rotate-90" />
             <Moon className="h-4 w-4 sm:h-5 sm:w-5 absolute transition-all scale-0 -rotate-90 dark:scale-100 dark:rotate-0" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10" aria-label="Notifications">
-            <i className="ri-notification-3-line text-lg sm:text-xl" aria-hidden />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 sm:h-10 sm:w-10"
+            aria-label="Notifications"
+          >
+            <i
+              className="ri-notification-3-line text-lg sm:text-xl"
+              aria-hidden
+            />
           </Button>
-          <Button variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10 hidden sm:flex" aria-label="Settings">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 sm:h-10 sm:w-10 hidden sm:flex"
+            aria-label="Settings"
+          >
             <i className="ri-settings-3-line text-lg sm:text-xl" aria-hidden />
           </Button>
         </div>
