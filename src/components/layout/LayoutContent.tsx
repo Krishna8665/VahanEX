@@ -1,20 +1,32 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
+import { Toaster } from "react-hot-toast";
 import { ThemeProvider } from "@/components/theme-provider";
-import Header from "@/components/layout/Header";
-import Sidebar from "@/components/layout/Sidebar";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import Header from "./Header";
+import Sidebar from "./Sidebar";
 
-interface ClientLayoutProps {
+interface LayoutContentProps {
   children: ReactNode;
 }
 
-export function ClientLayout({ children }: ClientLayoutProps) {
+export default function LayoutContent({ children }: LayoutContentProps) {
   const pathname = usePathname();
+  const { mounted } = useAuth();
+  const [clientMounted, setClientMounted] = useState(false);
 
-  // Pages that should NOT show sidebar/header
+  useEffect(() => {
+    setClientMounted(true);
+  }, []);
+
   const isAuthPage = pathname === "/login" || pathname === "/forgot-password";
+
+  // Wait for both client mount and auth mount
+  if (!clientMounted || !mounted) {
+    return null;
+  }
 
   return (
     <ThemeProvider
@@ -24,15 +36,15 @@ export function ClientLayout({ children }: ClientLayoutProps) {
       disableTransitionOnChange
     >
       {isAuthPage ? (
-        children
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          {children}
+        </div>
       ) : (
         <div className="flex h-screen overflow-hidden">
-          {/* Sidebar */}
           <aside className="hidden lg:block w-64 flex-shrink-0 fixed inset-y-0 left-0 z-30">
-            <Sidebar />
+            <Sidebar isMobile={false} />
           </aside>
 
-          {/* Main content */}
           <div className="flex flex-col flex-1 w-full lg:ml-64 overflow-hidden">
             <Header />
             <main className="flex-1 overflow-y-auto bg-background">
@@ -41,6 +53,8 @@ export function ClientLayout({ children }: ClientLayoutProps) {
           </div>
         </div>
       )}
+
+      <Toaster position="top-center" />
     </ThemeProvider>
   );
 }

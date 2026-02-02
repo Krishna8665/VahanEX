@@ -1,8 +1,8 @@
-// src/app/layout.tsx
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ClientLayout } from "@/components/layout/ClientLayout";
+import { AuthProvider } from "@/context/AuthContext";
+import LayoutContent from "@/components/layout/LayoutContent";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -20,22 +20,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`
-          ${inter.variable}
-          font-sans
-          antialiased
-          bg-background
-          text-foreground
-          min-h-screen
-        `}
+        className={`${inter.variable} font-sans antialiased bg-background text-foreground overflow-hidden h-screen w-screen`}
       >
-        <ClientLayout>{children}</ClientLayout>
+        <AuthProvider>
+          <LayoutContent>{children}</LayoutContent>
+        </AuthProvider>
       </body>
     </html>
   );
