@@ -23,6 +23,15 @@ import {
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   ChevronLeft,
   ChevronRight,
   Plus,
@@ -30,6 +39,7 @@ import {
   Edit2,
   Trash2,
   Eye,
+  AlertCircle,
 } from "lucide-react";
 import api from "@/lib/axios";
 import toast from "react-hot-toast";
@@ -73,7 +83,9 @@ export default function StudentsPage() {
   const [error, setError] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
-  const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [studentToDelete, setStudentToDelete] = useState<string | null>(null);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
@@ -108,11 +120,17 @@ export default function StudentsPage() {
         ...(debouncedSearch && { search: debouncedSearch }),
       };
       const response = await api.get("/students", { params });
+      console.log("API Response:", response.data); // Debug log
+      
       const data = response.data?.data || [];
       setStudents(Array.isArray(data) ? data : []);
 
-      const meta = response.data?.meta || { totalPages: 1 };
-      setTotalPages(meta.totalPages || 1);
+      // Handle different possible response structures
+      const meta = response.data?.meta || response.data?.pagination || {};
+      const pages = meta.totalPages || meta.total_pages || 1;
+      
+      console.log("Total Pages:", pages); // Debug log
+      setTotalPages(pages);
     } catch (err: any) {
       const msg = err.response?.data?.message || "Failed to load students";
       setError(msg);
@@ -303,19 +321,22 @@ export default function StudentsPage() {
     setDialogOpen(true);
   };
 
-  const handleDelete = async (studentId: string) => {
-    if (!confirm("Are you sure you want to delete this student?")) return;
+  const handleDelete = async () => {
+    if (!studentToDelete) return;
 
-    setDeleteLoading(studentId);
+    setDeleteLoading(true);
     try {
-      await api.delete(`/students/${studentId}`);
-      setStudents(students.filter((s) => s.id !== studentId));
+      await api.delete(`/students/${studentToDelete}`);
+      setStudents(students.filter((s) => s.id !== studentToDelete));
       toast.success("Student deleted successfully!");
+      setDeleteDialogOpen(false);
+      setStudentToDelete(null);
+      fetchStudents();
     } catch (err: any) {
       const msg = err.response?.data?.message || "Failed to delete student";
       toast.error(msg);
     } finally {
-      setDeleteLoading(null);
+      setDeleteLoading(false);
     }
   };
 
@@ -496,7 +517,6 @@ export default function StudentsPage() {
                   value={formData.courseStartDate}
                   onChange={handleInputChange}
                   required
-                  min={new Date().toISOString().split("T")[0]} // ← only today and future
                   className={`h-11 text-base ${formErrors.courseStartDate ? "border-red-500 focus:ring-red-500" : ""}`}
                 />
                 {formErrors.courseStartDate && (
@@ -522,7 +542,7 @@ export default function StudentsPage() {
                   required
                   min={
                     formData.courseStartDate ||
-                    new Date().toISOString().split("T")[0] // fallback to today if no start date yet
+                    new Date().toISOString().split("T")[0]
                   }
                   className={`h-11 text-base ${formErrors.courseEndDate ? "border-red-500 focus:ring-red-500" : ""}`}
                 />
@@ -574,7 +594,7 @@ export default function StudentsPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Table */}
+      {/* Table with Pagination attached */}
       {loading ? (
         <div className="space-y-4">
           <div className="flex justify-center items-center h-32">
@@ -717,14 +737,13 @@ export default function StudentsPage() {
                                 variant="ghost"
                                 size="icon"
                                 className="h-9 w-9 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600"
-                                onClick={() => handleDelete(student.id)}
-                                disabled={deleteLoading === student.id}
+                                onClick={() => {
+                                  setStudentToDelete(student.id);
+                                  setDeleteDialogOpen(true);
+                                }}
+                                disabled={deleteLoading}
                               >
-                                {deleteLoading === student.id ? (
-                                  <Loader2 className="h-5 w-5 animate-spin" />
-                                ) : (
-                                  <Trash2 className="h-5 w-5" />
-                                )}
+                                <Trash2 className="h-5 w-5" />
                               </Button>
                             </div>
                           </TableCell>
@@ -744,55 +763,111 @@ export default function StudentsPage() {
                 </TableBody>
               </Table>
             </div>
+
+            {/* Pagination inside the Card - attached to table */}
+            <div className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-t bg-muted/20 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+              <p className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
+                Showing{" "}
+                <span className="font-medium text-foreground">
+                  {(currentPage - 1) * ITEMS_PER_PAGE + 1}–
+                  {Math.min(currentPage * ITEMS_PER_PAGE, students.length)}
+                </span>{" "}
+                of <span className="font-medium text-foreground">{students.length}</span> students
+              </p>
+
+              <div className="flex items-center gap-1 sm:gap-2">
+                {/* Previous Button */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm gap-1"
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Previous</span>
+                  <span className="sm:hidden">Prev</span>
+                </Button>
+
+                {/* Page Numbers */}
+                <div className="flex items-center gap-0.5 sm:gap-1">
+                  {getPaginationRange().map((page, idx) => (
+                    <Button
+                      key={`${page}-${idx}`}
+                      variant={page === currentPage ? "default" : "outline"}
+                      size="sm"
+                      className={`w-7 h-7 sm:w-9 sm:h-9 text-xs sm:text-sm p-0 ${
+                        page === currentPage
+                          ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                          : ""
+                      } ${
+                        page === "..."
+                          ? "cursor-default pointer-events-none border-none hover:bg-transparent"
+                          : ""
+                      }`}
+                      disabled={page === "..."}
+                      onClick={() => typeof page === "number" && setCurrentPage(page)}
+                    >
+                      {page}
+                    </Button>
+                  ))}
+                </div>
+
+                {/* Next Button */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm gap-1"
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  <span className="hidden sm:inline">Next</span>
+                  <span className="sm:hidden">Next</span>
+                  <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
+                </Button>
+              </div>
+            </div>
           </CardContent>
         </Card>
       )}
-      {/* Pagination - clean, modern, responsive */}
-      <div className="flex items-center justify-center gap-2 flex-wrap mt-8">
-        {/* Previous */}
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-9 w-9 rounded-full border-gray-300 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200"
-          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-          disabled={currentPage === 1}
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </Button>
-
-        {/* Page numbers */}
-        {getPaginationRange().map((page, idx) => (
-          <Button
-            key={`${page}-${idx}`}
-            variant={page === currentPage ? "default" : "outline"}
-            size="icon"
-            className={`
-        h-9 w-9 rounded-full text-sm font-medium transition-all
-        ${
-          page === currentPage
-            ? "bg-teal-600 hover:bg-teal-700 text-white border-teal-600 shadow-sm"
-            : "border-gray-300 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200"
-        }
-        ${page === "..." ? "cursor-default pointer-events-none bg-transparent border-none shadow-none" : ""}
-      `}
-            disabled={page === "..."}
-            onClick={() => typeof page === "number" && setCurrentPage(page)}
-          >
-            {page}
-          </Button>
-        ))}
-
-        {/* Next */}
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-9 w-9 rounded-full border-gray-300 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200"
-          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-          disabled={currentPage === totalPages}
-        >
-          <ChevronRight className="h-5 w-5" />
-        </Button>
-      </div>
+      
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent className="w-full max-w-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-red-600" />
+              Delete Student
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this student? This action cannot
+              be undone and will remove all associated data.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end">
+            <AlertDialogCancel 
+              className="h-11 px-6"
+              onClick={() => setStudentToDelete(null)}
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={deleteLoading}
+              className="h-11 px-6 bg-red-600 hover:bg-red-700 text-white"
+            >
+              {deleteLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete"
+              )}
+            </AlertDialogAction>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
