@@ -631,7 +631,7 @@ export default function SchedulePage() {
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-4 md:space-y-6">
+    <div className="flex flex-col gap-4 md:gap-6">
       {/* Header + Add Button */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1">

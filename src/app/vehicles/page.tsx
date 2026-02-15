@@ -128,7 +128,6 @@ export default function VehiclesPage() {
     setFormLoading(true);
 
     try {
-      // ✅ FIXED: Match backend DTO exactly
       // Backend expects: vehicleNumber, model, type, vehicleType, status
       const payload = {
         vehicleNumber: formData.vehicleNumber.trim(),
