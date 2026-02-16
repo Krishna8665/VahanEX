@@ -133,7 +133,7 @@ export default function VehiclesPage() {
         vehicleNumber: formData.vehicleNumber.trim(),
         model: formData.model.trim(),
         type: formData.vehicleType, // Send as 'type' for the type field
-        vehicleType: formData.vehicleType, // Also send as 'vehicleType' for enum
+        vehicleType: formData.vehicleType, 
         status: formData.status, // Use exact values: 'available', 'inMaintenance', 'inUse'
       };
 
