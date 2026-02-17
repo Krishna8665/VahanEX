@@ -24,7 +24,7 @@ import {
 import { GrBike } from "react-icons/gr";
 import { GiScooter } from "react-icons/gi";
 
-// Dummy payment records (same for all vehicles)
+
 const dummyPayments = [
   {
     initial: "R",
