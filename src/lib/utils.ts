@@ -1,32 +1,32 @@
 // src/lib/utils.ts
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
-import { Session } from "@/types"
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { Session } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 /**
  * Maps session status to badge variant
  */
-export function getStatusVariant(status: Session["status"]): "default" | "secondary" | "success" | "outline" {
-  const lower = status.toLowerCase()
+export function getStatusVariant(
+  status: Session["status"],
+): "default" | "secondary" | "success" | "outline" {
+  const lower = status.toLowerCase();
   switch (lower) {
     case "ongoing":
-      return "default"
+      return "default";
     case "upcoming":
-      return "secondary"
+      return "secondary";
     case "completed":
-      return "success"
+      return "success";
     default:
-      return "outline"
+      return "outline";
   }
 }
 
-/**
- * Format currency (simple version)
- */
+// Format currency (simple version)
 export function formatCurrency(amount: string | number): string {
-  return `₹${Number(amount).toLocaleString("en-IN")}`
+  return `₹${Number(amount).toLocaleString("en-IN")}`;
 }
