@@ -7,9 +7,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-/**
- * Maps session status to badge variant
- */
+// Maps session status to badge variant
+
 export function getStatusVariant(
   status: Session["status"],
 ): "default" | "secondary" | "success" | "outline" {
