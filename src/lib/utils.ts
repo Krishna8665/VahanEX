@@ -8,7 +8,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 // Maps session status to badge variant
-
 export function getStatusVariant(
   status: Session["status"],
 ): "default" | "secondary" | "success" | "outline" {
