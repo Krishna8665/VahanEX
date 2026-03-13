@@ -1,5 +1,5 @@
 "use client";
-//student/page.tsx
+
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -121,14 +121,14 @@ export default function StudentsPage() {
       };
       const response = await api.get("/students", { params });
       console.log("API Response:", response.data); // Debug log
-      
+
       const data = response.data?.data || [];
       setStudents(Array.isArray(data) ? data : []);
 
       // Handle different possible response structures
       const meta = response.data?.meta || response.data?.pagination || {};
       const pages = meta.totalPages || meta.total_pages || 1;
-      
+
       console.log("Total Pages:", pages); // Debug log
       setTotalPages(pages);
     } catch (err: any) {
@@ -772,7 +772,11 @@ export default function StudentsPage() {
                   {(currentPage - 1) * ITEMS_PER_PAGE + 1}–
                   {Math.min(currentPage * ITEMS_PER_PAGE, students.length)}
                 </span>{" "}
-                of <span className="font-medium text-foreground">{students.length}</span> students
+                of{" "}
+                <span className="font-medium text-foreground">
+                  {students.length}
+                </span>{" "}
+                students
               </p>
 
               <div className="flex items-center gap-1 sm:gap-2">
@@ -806,7 +810,9 @@ export default function StudentsPage() {
                           : ""
                       }`}
                       disabled={page === "..."}
-                      onClick={() => typeof page === "number" && setCurrentPage(page)}
+                      onClick={() =>
+                        typeof page === "number" && setCurrentPage(page)
+                      }
                     >
                       {page}
                     </Button>
@@ -818,7 +824,9 @@ export default function StudentsPage() {
                   variant="outline"
                   size="sm"
                   className="h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm gap-1"
-                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(totalPages, p + 1))
+                  }
                   disabled={currentPage === totalPages}
                 >
                   <span className="hidden sm:inline">Next</span>
@@ -830,7 +838,7 @@ export default function StudentsPage() {
           </CardContent>
         </Card>
       )}
-      
+
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent className="w-full max-w-sm">
@@ -845,7 +853,7 @@ export default function StudentsPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end">
-            <AlertDialogCancel 
+            <AlertDialogCancel
               className="h-11 px-6"
               onClick={() => setStudentToDelete(null)}
             >
